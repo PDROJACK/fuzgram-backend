@@ -1,12 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, HttpException, HttpStatus, Query, Res } from '@nestjs/common';
+import { ChatGPTService } from './chatgpt.service';
+
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly chatgptService: ChatGPTService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get("task")
+  async getTasks(@Query('task') task, @Query('options') options): Promise<object> {
+    const tasks  = await this.chatgptService.getTask(task, options);
+    if(tasks == null) throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    return { tasks }
   }
 }

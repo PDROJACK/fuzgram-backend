@@ -1,0 +1,4 @@
+- Tasks
+- Requirement specifications
+- Stories
+- Functionalities
