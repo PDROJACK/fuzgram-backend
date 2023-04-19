@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { FuzgramService } from './fuzgram.service';
 import { Headers } from '@nestjs/common';
 import { PostDocument } from './post.schema';
@@ -25,6 +25,10 @@ export class FuzgramController {
         return this.fuzgramService.search(params.username, params.socialUsername, params.keyword)
     }
 
-
+    // Page analytics
+    @Post("/analytics/:username/:social")
+    async postSocialAnalytics(@Param() params): Promise<void> {
+        return this.fuzgramService.socialAnalytics(params.username, params.social);
+    }
 
 }
