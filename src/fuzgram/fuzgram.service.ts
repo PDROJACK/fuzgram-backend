@@ -6,6 +6,7 @@ import { PostDocument } from './post.schema';
 import { UserDocument } from './user.schema';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
+import { TrackableType, TrackerDocument } from './tracker.schema';
 
 interface ResposeType {
     data: PostDocument[],
@@ -21,6 +22,7 @@ export class FuzgramService {
     private readonly httpService: HttpService,
     @InjectModel('post') private postModel: Model<PostDocument>,
     @InjectModel('user') private userModel: Model<UserDocument>,
+    @InjectModel('tracker') private trackerModel: Model<TrackerDocument>,
   ) {}
 
   // async create(createCatDto: CreateCatDto): Promise<Post> {
@@ -94,5 +96,16 @@ export class FuzgramService {
     const res = await this.postModel.find({username, socialUsername, $text: { $search: keyword}}).exec();
     console.log(res)
     return res
+  }
+
+  async socialAnalytics(username: string, social: string): Promise<void> {
+      // Find the social
+      const item = await this.userModel.findOne({username: username}).exec();
+
+      const res = await this.trackerModel
+                       .findOne({trackable_type: TrackableType.Social, tracker_id: `item.id:${social}`})
+                       .exec();
+     
+      // increment the views
   }
 }
